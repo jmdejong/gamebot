@@ -1,0 +1,22 @@
+{
+    "modules": [
+        "grunkbot",
+        "adminbot",
+        "helpbot",
+        "sofarbot",
+        "testbot"
+    ],
+    "channels": [
+        "#tildetown",
+        "#bots",
+        "#bots_test",
+        "#grunk",
+        "#lostpig",
+        "#sofar",
+        "#games",
+        "#tildeplays",
+        "#starbound",
+        "#gamebot"
+    ]
+}
+        
