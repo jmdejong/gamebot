@@ -4,7 +4,10 @@
         "adminbot",
         "helpbot",
         "sofarbot",
-        "testbot"
+        "testbot",
+        "hhgttgbot",
+        "translatebot",
+        "udsadmin"
     ],
     "channels": [
         "#tildetown",
@@ -17,6 +20,7 @@
         "#tildeplays",
         "#starbound",
         "#gamebot"
-    ]
+    ],
+    "reloadcore": true
 }
         

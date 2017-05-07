@@ -1,0 +1,15 @@
+{
+    "startmodules": [
+        "loaderbot",
+        "adminbot",
+        "helpbot",
+        "grunkbot"
+    ],
+    "startchannels": [
+        "#gamebot",
+        "#bots",
+        "#games",
+        "#lostpig",
+        "#bots_test"
+    ]
+}

@@ -16,10 +16,16 @@ class LoaderBot(SubBot):
         
         try:
             modulename = args.partition(' ')[0]
-        
             if modulename not in self.get_allowed()["modules"]:
                 print("module {} not allowed".format(modulename))
                 return
+            self.load(modulename)
+            
+        except Exception as err:
+            print("loading {} failed: {}".format(modulename, err))
+    
+    def load(self, modulename):
+        try:
             importlib.invalidate_caches()
             module = importlib.import_module(modulename)
             module = importlib.reload(module)

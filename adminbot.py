@@ -11,12 +11,16 @@ class AdminBot(SubBot):
     channels = {"#gamebot"}
     allowedconfig = "allowed.json"
     description = "Perform administrative tasks without restarting the bot"
+    minargs = 16
     
-    def __init__(self):
-        self.modules = {}
     
     def on_command(self, command, args, chan, sender, text):
         argv = shlex.split(args)
+        # ensure argv[0] and argv[1] etc. don't error
+        for i in range(self.minargs):
+            if i>len(argv):
+                argv.append(None)
+        
         task = argv[0]
         
         if task == "join":
@@ -28,7 +32,7 @@ class AdminBot(SubBot):
             else:
                 self.reply(chan, "{} is not an allowed channel in {}".format(channel, self.allowedconfig))
         
-        if task == "leave":
+        elif task == "leave":
             channel = argv[1]
             if channel in self.get_allowed()["channels"]:
                 self.bot.connection.part([channel])
@@ -36,34 +40,61 @@ class AdminBot(SubBot):
             else:
                 self.reply(chan, "{} is not an allowed channel in {}".format(channel, self.allowedconfig))
         
-        if task == "load":
+        elif task == "load":
             modulename = argv[1]
             if modulename in self.get_allowed()["modules"]:
-                self.load_subbot(modulename)
-                self.reply(chan, "{} loaded".format(modulename))
+                status = load_subbot(modulename, self.bot)
+                self.reply(chan, status)
             else:
-                self.reply(chan, "{} failed".format(args))
+                self.reply(chan, "{} not allowed".format(args))
         
-        if task == "stop":
+        elif task == "stop":
             botname = argv[1]
             if botname in self.get_allowed()["modules"]:
-                self.stop_subbot(botname)
-                self.reply(chan, "{} stopped".format(botname))
+                status = self.stop_subbot(botname)
+                self.reply(chan, status)
             else:
-                self.reply(chan, "{} failed: not allowed".format(args))
+                self.reply(chan, "{} not allowed".format(args))
         
-        if task == "reload":
+        elif task == "reload":
             botname = argv[1]
             if botname in self.get_allowed()["modules"]:
                 status = self.reload_subbot(botname)
                 self.reply(chan, status)
             else:
-                self.reply(chan, "{} failed".format(args))
+                self.reply(chan, "{} not allowed".format(args))
         
-        if task == "help":
-            self.reply(chan, "WIP")
+        elif task == "reloadcore":
+            try:
+                if not self.get_allowed().get("reloadcore"):
+                    self.reply(chan, "reloading core not allowed")
+                    return
+                oldcore = self.bot
+                subbots = self.bot.subbots
+                chanlist = self.bot.chanlist
+                client = self.bot.client
+                importlib.invalidate_caches()
+                module = importlib.import_module("gamebot")
+                module = importlib.reload(module)
+                
+                gamebot = module.GameBot(client, chanlist)
+                gamebot.on_welcome(self.bot.connection, None)
+                for name, subbot in subbots.items():
+                    gamebot.add_subbot(subbot, name)
+                    #self.bot.remove_subbot(name)
+                oldcore.stop()
+                self.reply(chan, "gamebot core reloaded")
+                
+                
+            except Exception as err:
+                errmsg = "reloading core failed: {}".format(err)
+                print(errmsg)
+                self.reply(chan, errmsg)
         
-        if task == "print":
+        elif task == "echo":
+            self.reply(chan, argv[1])
+        
+        elif task == "print":
             print(argv[1])
     
     #def join_channel(self,chan):
@@ -77,11 +108,8 @@ class AdminBot(SubBot):
     def load_subbot(self, modulename):
         try:
             importlib.invalidate_caches()
-            if modulename in self.modules:
-                module = importlib.reload(self.modules[modulename])
-            else:
-                module = importlib.import_module(modulename)
-            self.modules[modulename] = module
+            module = importlib.import_module(modulename)
+            module = importlib.reload(module)
             subbot = module.BotModule()
             self.bot.add_subbot(subbot, modulename)
             return "loaded {}".format(modulename)
@@ -95,6 +123,19 @@ class AdminBot(SubBot):
     
     def stop_subbot(self, botname):
         self.bot.remove_subbot(botname)
+
+
+def load_subbot(modulename, bot):
+    try:
+        importlib.invalidate_caches()
+        module = importlib.import_module(modulename)
+        module = importlib.reload(module)
+        subbot = module.BotModule()
+        bot.add_subbot(subbot, modulename)
+        return "loaded {}".format(modulename)
+    except Exception as err:
+        return "loading {} failed: {}".format(modulename, err)
+
 
 BotModule = AdminBot
         

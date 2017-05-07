@@ -3,12 +3,12 @@
 from gamesubbot import GameSubBot
 
 class SoFarGame(GameSubBot):
-    channels = {"#games", "#sofar", "#bots"}
+    channels = {"#games", "#sofar", "#bots", "#tildeplays"}
     commands = {"!sofarstart", "!sofar"}
     startcommand = "!sofarstart"
     runcommand = "!sofar"
     name = "So Far"
-    program_arguments = ["./dfrotz", "-m", "SoFar.z8"]
+    program_arguments = ["games/dfrotz", "-m", "games/SoFar.z8"]
 
 
 
