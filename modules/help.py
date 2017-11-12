@@ -13,7 +13,7 @@ class HelpBot(SubBot):
     
     def on_command(self, command, args, chan, sender, text):
         
-        self.reply(chan, self.getHelp(command, args.split(), channel in self.spamfree))
+        self.reply(chan, self.getHelp(command, args.split(), chan in self.spamfree))
     
     def getHelp(self, command, args, spamFree=False):
         
@@ -49,8 +49,6 @@ class HelpBot(SubBot):
     
     def longHelp(self):
         helptext = self.format("{botname} is ~troido's irc bot. It has several kinds of functionality:\n{allhelp}")
-        for line in helptext.split("\n"):
-            self.reply(chan, line)
         return helptext
     
     def moduleHelp(self, name):
