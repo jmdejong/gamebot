@@ -4,6 +4,7 @@ import time
 import sys
 import queue
 import threading
+import textwrap
 
 
 class IrcSender:
@@ -12,7 +13,8 @@ class IrcSender:
     def __init__(self, connection=None):
         
         self.msgBuffer = queue.Queue()
-        self.busy = False
+        self.busy = False # todo, probably make this a lock
+        # alternatively, sender thread is running all the time, but waits for something to become available in the queue
         
         self.maxlen = 450
         self.delay = 0.5
@@ -26,9 +28,9 @@ class IrcSender:
     
     def send(self, chan, text):
         
-        while len(text):
-            self.msgBuffer.put((chan, text[:self.maxlen]))
-            text = text[self.maxlen:]
+        lines = textwrap.wrap(text, self.maxlen)
+        for line in lines:
+            self.msgBuffer.put((chan, line))
         
         self._startProcessing()
     
@@ -53,4 +55,6 @@ class IrcSender:
         finally:
             sys.stdout.flush()
     
+
+
 
