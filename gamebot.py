@@ -3,6 +3,11 @@
 import time
 import sys
 import json
+import importlib
+import queue
+import threading
+import ircsender
+
 
 class GameBot:
     
@@ -18,6 +23,9 @@ class GameBot:
         
         self.chanlist = channels
         self.lastMsg = time.time()
+        
+        self.sender = ircsender.IrcSender()
+        
         self.subbots = {}
         self.commands = {}
         self.active_channels = set()
@@ -26,7 +34,25 @@ class GameBot:
         for eventname, handler in self.handlers.items():
             client.add_global_handler(eventname, handler)
     
-    # add a subbot to the bot. Return whether succesfull
+    def load_module(self, name):
+        try:
+            importlib.invalidate_caches()
+            module = importlib.import_module(modulename)
+            module = importlib.reload(module)
+        except Exception as err:
+            print("Failed to load module '{}': {}".format(name, err))
+    
+    def load_subbot(self, modulename):
+        try:
+            module = self.load_module(modulename)
+            subbot = module.BotModule()
+            self.add_subbot(subbot, modulename)
+            print("succesfully loaded subbot {}".format(modulename))
+        except Exception as err:
+            print("loading {} failed: {}".format(modulename, err))
+        
+    
+    # add a running subbot to the bot. Return whether succesfull
     def add_subbot(self, subbot, handle):
         try:
             if handle in self.subbots:
@@ -66,6 +92,7 @@ class GameBot:
     
     def on_welcome(self, c, e):
         self.connection = c
+        self.sender.setConnection(c);
         for channel in self.chanlist:
             c.join(channel)
         for handle, subbot in self.subbots.items():
@@ -81,7 +108,7 @@ class GameBot:
         if e.source.nick != c.get_nickname():
             return
         chan = e.target
-        #self.active_channels = chan
+        self.active_channels.add(chan)
         for handle, subbot in self.subbots.items():
             try:
                 subbot.on_enter(chan)
@@ -114,26 +141,9 @@ class GameBot:
                 sys.stdout.flush()
                 sys.stderr.flush()
     
-    
-    def _waitForMessage(self):
-        while(time.time() - self.lastMsg < 0.5):
-            time.sleep(0.2)
-        self.lastMsg = time.time()
-    
     def send_message(self, chan, text):
-        try:
-            maxlen = 400
-            if len(text) > maxlen:
-                self.send_message(chan, text[:maxlen])
-                self.send_message(chan, text[maxlen:])
-                return
-            
-            self._waitForMessage()
-            self.connection.privmsg(chan, text)
-        except Exception as err:
-            print("sending message {} to channel {} failed: {}".format(text, chan, err))
-        finally:
-            sys.stdout.flush()
+        self.sender.send(chan, text)
+    
     
     def stop(self):
         for eventname, handler in self.handlers.items():

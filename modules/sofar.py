@@ -8,7 +8,7 @@ class SoFarGame(GameSubBot):
     startcommand = "!sofarstart"
     runcommand = "!sofar"
     name = "So Far"
-    program_arguments = ["games/dfrotz", "-m", "games/SoFar.z8"]
+    program_arguments = ["dfrotz", "-m", "games/SoFar.z8"]
 
 
 

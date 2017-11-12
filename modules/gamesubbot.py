@@ -7,6 +7,7 @@ class GameSubBot(SubBot):
     
     raw_description = "Plays the game '{name}', a text-based adventure. Everybody sends commands to the same game session. {startcommand} starts the session. Once the session is running everything after the {runcommand} command is directly passed to the game. Only available in channels {channels}"
     
+    
     def __init__(self):
         self.game_sessions = {}
         self.description = self.raw_description.format(channels=', '.join(self.channels), name=self.name, startcommand=self.startcommand, runcommand=self.runcommand)

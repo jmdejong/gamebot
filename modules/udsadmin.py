@@ -6,6 +6,7 @@ import importlib
 import socket
 import threading
 import udsserver
+import traceback
 
 class UdsAdmin(SubBot):
     
@@ -32,13 +33,7 @@ class UdsAdmin(SubBot):
             if task == "say":
                 self.say(argv[1], argv[2])
             
-            elif task == "print":
-                print(argv[1])
-            
-            elif task == "echo":
-                self.server.broadcast(argv[1]+"\n")
-            
-            elif task == "info":
+            elif task == "log":
                 self.log(argv[1])
             
             elif task == "join":
@@ -53,12 +48,12 @@ class UdsAdmin(SubBot):
             
             elif task == "loadcode":
                 name = argv[1]
-                self.loadmodule()
+                self.loadmodule(name)
                 self.log("reloaded python module "+name)
             
             elif task == "load":
                 name = argv[1]
-                module = self.loadmodule()
+                module = self.loadmodule(name)
                 subbot = module.BotModule()
                 if name in self.bot.subbots:
                     self.bot.remove_subbot(name)
@@ -75,6 +70,7 @@ class UdsAdmin(SubBot):
                 
                 module = self.loadmodule("gamebot")
                 gamebot = module.GameBot(oldcore.client, oldcore.chanlist)
+                #gamebot.sender = self.loadmodule("ircsender").IrcSender()
                 
                 gamebot.on_welcome(self.bot.connection, None)
                 for name, subbot in oldcore.subbots.items():
@@ -82,21 +78,59 @@ class UdsAdmin(SubBot):
                 oldcore.stop()
                 self.log("gamebot core reloaded")
             
+            elif task == "threads":
+                for thread in threading.enumerate():
+                    self.log(thread.name)
+            
+            
+            elif task == "closesockets":
+                for thread in threading.enumerate():
+                    if thread._target and thread._target.__self__ and thread._target.__self__.sock:
+                        try:
+                            thread._target.__self__.sock.shutdown(socket.SHUT_RDWR)
+                            self.log("shut down a socket")
+                        except Exception:
+                            print("failed to shut down socket")
+                        self.log(thread._target.__self__.sock)
+            
+            elif task == "topic":
+                channel = argv[1]
+                topic = argv[2]
+                self.bot.connection.topic(channel, topic)
+                self.log("set topic for {} to {}".format(channel, topic))
+            
+            elif task == "mode":
+                channel = argv[1]
+                command = argv[2]
+                self.bot.connection.mode(channel, command)
+                self.log("changed mode for {} to {}".format(channel, command))
+            
+            elif task == "sendraw":
+                command = argv[1]
+                self.bot.connection.send_raw(command)
+                self.log("sent raw command {}".format(command))
+            
+            elif task == "me":
+                chan = argv[1]
+                status = argv[2]
+                self.bot.connection.action(chan, status)
+            
             else:
-                self.log("unknown command "+task)
+                self.log("unknown command "+str(task))
         
         except Exception as err:
+            self.log(traceback.format_exc)
             self.log(err)
-            raise
     
     def stop(self):
+        self.log("closing socket server. If the client does not stop/crash then restart it manually")
         self.server.close()
     
     def say(self, chan, text):
         self.reply(chan, text)
     
     def log(self, text):
-        self.server.broadcast(text+"\n")
+        self.server.broadcast(str(text)+"\n")
         print(text)
         
     def loadmodule(self, modulename):

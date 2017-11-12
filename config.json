@@ -1,15 +1,26 @@
 {
     "startmodules": [
-        "loaderbot",
-        "adminbot",
-        "helpbot",
-        "grunkbot"
+        "loader",
+        "help",
+        "udsadmin",
+        "grunk",
+        "sofar",
+        "fortune",
+        "population",
+        "idiottime",
+        "echo",
+        "birthday",
+        "duckduck",
+        "translate",
+        "water"
     ],
     "startchannels": [
         "#gamebot",
         "#bots",
         "#games",
-        "#lostpig",
-        "#bots_test"
+        "#sofar",
+        "#hhgttg",
+        "#grunk",
+        "#tildeplays"
     ]
 }

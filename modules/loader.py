@@ -8,15 +8,15 @@ class LoaderBot(SubBot):
     name = "loader"
     commands = {"!gamebotload"}
     channels = {"#gamebot"}
-    allowedconfig = "allowed.json"
-    description = "reload modules; fallback for when adminbot crashes"
+    allowedconfig = "allowed_modules.txt"
+    description = "reload modules; fallback for when admin crashes"
     
     
     def on_command(self, command, args, chan, sender, text):
         
         try:
             modulename = args.partition(' ')[0]
-            if modulename not in self.get_allowed()["modules"]:
+            if modulename not in self.get_allowed_modules():
                 print("module {} not allowed".format(modulename))
                 return
             self.load(modulename)
@@ -35,10 +35,11 @@ class LoaderBot(SubBot):
         except Exception as err:
             print("loading {} failed: {}".format(modulename, err))
     
-    def get_allowed(self):
+    def get_allowed_modules(self):
         with open(self.allowedconfig) as f:
-            config = json.load(f)
-        return config
+            allowed = set(f.read().split('\n'))
+        print(allowed)
+        return allowed
 
 BotModule = LoaderBot
         

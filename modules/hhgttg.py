@@ -9,6 +9,6 @@ class HhgttgGame(GameSubBot):
     startcommand = "!hhgttgstart"
     runcommand = "!hhgttg"
     name = "Hitchhikers Guide to the Galaxy game"
-    program_arguments = ["games/dfrotz", "-m", "games/SGOLD-HH.z5"]
+    program_arguments = ["dfrotz", "-m", "games/SGOLD-HH.z5"]
 
 BotModule = HhgttgGame

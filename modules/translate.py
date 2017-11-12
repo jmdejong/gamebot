@@ -7,7 +7,7 @@ class TranslateBot(SubBot):
     
     name = "translatebot"
     commands = {"!translate"}
-    description = "translate a given text. Powered by Yandex.Translate. https://translate.yandex.com/ Example usage: !translate de-en Guten Tag, wie geht es dir?"
+    description = "translate a given text. Powered by Yandex.Translate (https://translate.yandex.com/). Example usage: !translate de-en Guten Tag, wie geht es dir?"
     
     key = "trnsl.1.1.20170506T091418Z.c9cf68304a9ed14c.687b956b33714851a8300106de5de4da009190e9"
     getlangurl = "https://translate.yandex.net/api/v1.5/tr.json/getLangs"
@@ -16,9 +16,9 @@ class TranslateBot(SubBot):
     def on_command(self, command, args, chan, sender, text):
         if command == "!translate":
             action, _sep, text = args.partition(' ')
-            if action == "getlang":
+            if action == "getlang" or action == "getlangs":
                 self.reply(chan, ', '.join(code + ": " + name for code, name in self.getlangs()["langs"].items()))
-            elif '-' in action:
+            else:
                 translations = self.translate(action, text)["text"]
                 # I don't know why text is a list, but this seems the most intuititive action
                 for translation in translations:

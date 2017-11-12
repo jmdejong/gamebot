@@ -9,6 +9,6 @@ class GrunkGame(GameSubBot):
     startcommand = "!grunkstart"
     runcommand = "!grunk"
     name = "Lost Pig"
-    program_arguments = ["games/dfrotz", "-m", "games/LostPig.z8"]
+    program_arguments = ["dfrotz", "-m", "games/LostPig.z8"]
 
 BotModule = GrunkGame

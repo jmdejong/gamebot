@@ -3,6 +3,7 @@ import sys
 import socket
 import threading
 import os
+import time
 
 MESSAGE_SIZE = 4096
 
@@ -14,6 +15,8 @@ class Server:
         self.onConnection = onConnection
         self.onMessage = onMessage
         self.onConnectionClose = onConnectionClose
+        self.connections = set()
+        self.closed = False
     
     
     def start(self, address):
@@ -26,7 +29,7 @@ class Server:
         try:
             
             self.sock.bind(address)
-            os.chmod(address, 448)
+            os.chmod(address, 0o600)
         except PermissionError:
             print("You don't have permission to use this socket file.\nRun the server with the '-s' option to specify another socket file path.\nWARNING: if an existing file is given, it will be overwritten.")
             sys.exit(-1)
@@ -36,15 +39,14 @@ class Server:
         
         self.sock.listen()
         
-        self.listener = threading.Thread(target=self._listen, daemon=True)
+        self.listener = threading.Thread(target=self._listen, name="uds main server thread "+time.asctime(), daemon=True)
         self.listener.start()
     
     
     def _listen(self):
-        self.connections = set()
-        while True:
+        while not self.closed:
             connection, client_address = self.sock.accept()
-            listener = threading.Thread(target=self._listenCon, args=(connection,), daemon=True)
+            listener = threading.Thread(target=self._listenCon, args=(connection,), name="uds server thread "+time.asctime(), daemon=True)
             listener.start()
     
     def _listenCon(self, connection):
@@ -63,6 +65,7 @@ class Server:
                 break
         self.connections.discard(connection)
         self.onConnectionClose(connection)
+        connection.close()
     
     
     
@@ -79,5 +82,12 @@ class Server:
             self.send(connection, msg)
     
     def close(self):
+        self.closed = True
+        for connection in self.connections:
+            self.onConnectionClose(connection)
+            connection.shutdown(socket.SHUT_RDWR)
+            connection.close()
+        self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
+        print("socket closed")
 

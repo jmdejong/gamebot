@@ -1,13 +1,13 @@
 {
     "modules": [
         "grunkbot",
-        "adminbot",
         "helpbot",
         "sofarbot",
         "testbot",
         "hhgttgbot",
         "translatebot",
-        "udsadmin"
+        "udsadmin",
+        "udsserver"
     ],
     "channels": [
         "#tildetown",
