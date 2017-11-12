@@ -1,0 +1,24 @@
+{
+    "startmodules": [
+        "birthday",
+        "duckduck",
+        "echo",
+        "fortune",
+        "grunk",
+        "help",
+        "hhgttg",
+        "idiottime",
+        "loader",
+        "population",
+        "sofar",
+        "udsadmin",
+        "translate",
+        "water"
+    ],
+    "startchannels": [
+        "#gamebot",
+        "#bots",
+        "#testgamebot"
+    ],
+    "name": "testgamebot"
+}
