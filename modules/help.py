@@ -12,8 +12,9 @@ class HelpBot(SubBot):
     games = {"grunk", "hhgttg", "sofar"}
     
     def on_command(self, command, args, chan, sender, text):
-        
-        self.reply(chan, self.getHelp(command, args.split(), chan in self.spamfree))
+        help = self.getHelp(command, args.split(), chan in self.spamfree)
+        for line in help.split('\n'):
+            self.reply(chan, line)
     
     def getHelp(self, command, args, spamFree=False):
         
@@ -64,19 +65,20 @@ class HelpBot(SubBot):
         return ', '.join(name for name in self.bot.subbots)
     
     def gameHelp(self, spamfree=False):
-        help = "Hi I'm gamebot. I currently have these games available:"
+        help = "Hi I'm gamebot. I currently have these games available:\n"
         for name, game in self.bot.subbots.items():
             if name in self.games:
-                help += "{name}. Startcommand: {startcommand}, runcommand: {command}. Channels: {channels}".format(name=game.name, startcommand=game.startcommand, command=game.runcommand, channels = ', '.join(game.channels))
+                help += "{name}. Startcommand: {startcommand}, runcommand: {command}. Channels: {channels}\n".format(name=game.name, startcommand=game.startcommand, command=game.runcommand, channels = ', '.join(game.channels))
         help += "Start a session of a game by running its startcommand. Once a session is running, you can control the game with the runcommand. Everyting you enter after the runcommand will be passed as input to the game."
         return help
     
     def format(self, text):
-        return text.format(
+        return (text.format(
                 botname = self.botname,
-                modules = self.getModules,
+                modules = self.getModules(),
                 allcommands = ', '.join(set().union(*(subbot.commands for subbot in self.bot.subbots.values()))),
-                allhelp = self.allModuleHelp())
+                allhelp = self.allModuleHelp()
+            ))
 
 
 

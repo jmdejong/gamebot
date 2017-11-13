@@ -5,7 +5,7 @@ from subapi import SubApi
 class GameSubBot(SubBot):
     
     
-    raw_description = "Plays the game '{name}', a text-based adventure. Everybody sends commands to the same game session. {startcommand} starts the session. Once the session is running everything after the {runcommand} command is directly passed to the game. Only available in channels {channels}"
+    raw_description = "Plays the game '{name}', a text-based adventure. Start command: '{startcommand}'. Run command: '{runcommand}'. Only available in channels {channels}"
     
     
     def __init__(self):
