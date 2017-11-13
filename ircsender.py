@@ -9,42 +9,53 @@ import textwrap
 
 class IrcSender:
     
+    """
+    The tilde.town IRC server only accepts messages of at most 512 bytes,
+    and will disconnect anyone who sends more than 2 messages per second for a longer time.
+    This class ensures that all sent text messages satisfy these constraints
+    """
     
     def __init__(self, connection=None):
         
         self.msgBuffer = queue.Queue()
-        self.busy = False # todo, probably make this a lock
-        # alternatively, sender thread is running all the time, but waits for something to become available in the queue
         
         self.maxlen = 450
         self.delay = 0.5
         
         self.connection = connection
+        
+        self.startProcessing()
     
     
     def setConnection(self, connection):
         self.connection = connection
-        self._startProcessing()
     
     def send(self, chan, text):
-        
+        """ put the message in the sending queue. This is the safe send """
         lines = textwrap.wrap(text, self.maxlen)
         for line in lines:
             self.msgBuffer.put((chan, line))
         
-        self._startProcessing()
     
-    def _startProcessing(self):
-        if not self.busy and self.connection and not self.msgBuffer.empty():
-            self.busy = True
-            threading.Thread(target=self._processBuffer()).start()
+    def startProcessing(self):
+        self.processing = True
+        threading.Thread(target=self._processBuffer).start()
+    
+    def stopProcessing(self):
+        self.processing = False
+        self.msgBuffer.put(None)
+    
+    
+    
+    # The next functions are executed on the processing thread
     
     def _processBuffer(self):
-        while not self.msgBuffer.empty():
-            chan, text = self.msgBuffer.get_nowait()
-            self._send(chan, text)
-            time.sleep(self.delay)
-        self.busy = False
+        while self.processing:
+            msg = self.msgBuffer.get()
+            if msg:
+                chan, text = msg
+                self._send(chan, text)
+                time.sleep(self.delay)
     
     
     def _send(self, chan, text):
@@ -54,7 +65,4 @@ class IrcSender:
             print("sending message {} to channel {} failed: {}".format(text, chan, err))
         finally:
             sys.stdout.flush()
-    
-
-
 

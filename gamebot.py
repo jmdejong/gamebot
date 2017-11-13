@@ -148,4 +148,6 @@ class GameBot:
     def stop(self):
         for eventname, handler in self.handlers.items():
             self.client.remove_global_handler(eventname, handler)
+        if hasattr(self.sender, "stopProcessing"):
+            self.sender.stopProcessing()
 

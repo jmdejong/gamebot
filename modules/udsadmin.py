@@ -68,6 +68,7 @@ class UdsAdmin(SubBot):
             elif task == "reloadcore":
                 oldcore = self.bot
                 
+                self.loadmodule("ircsender")
                 module = self.loadmodule("gamebot")
                 gamebot = module.GameBot(oldcore.client, oldcore.chanlist)
                 #gamebot.sender = self.loadmodule("ircsender").IrcSender()
