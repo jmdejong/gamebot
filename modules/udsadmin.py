@@ -7,6 +7,7 @@ import socket
 import threading
 import udsserver
 import traceback
+import os
 
 class UdsAdmin(SubBot):
     
@@ -111,6 +112,10 @@ class UdsAdmin(SubBot):
                 self.bot.connection.send_raw(command)
                 self.log("sent raw command {}".format(command))
             
+            elif task == "pid":
+                self.log(os.getpid())
+                
+                
             elif task == "me":
                 chan = argv[1]
                 status = argv[2]
