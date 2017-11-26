@@ -12,7 +12,7 @@ import ircsender
 class GameBot:
     
     
-    def __init__(self, client, channels):
+    def __init__(self, client, name, address="localhost", port=6667, channels=[]):
         
         self.handlers = {
             "welcome": self.on_welcome,
@@ -20,6 +20,10 @@ class GameBot:
             "privmsg": self.on_privmsg,
             "pubmsg": self.on_pubmsg
         }
+        
+        self.name = name
+        self.address = address
+        self.port = port
         
         self.chanlist = channels
         self.lastMsg = time.time()
@@ -33,6 +37,16 @@ class GameBot:
         self.client = client
         for eventname, handler in self.handlers.items():
             client.add_global_handler(eventname, handler)
+    
+    
+    def connect(self):
+        self.client.server().connect(self.address, self.port, self.name)
+    
+    def process(self):
+        self.client.process_forever(2)
+    
+    def disconnect(self, message="Bye all"):
+        self.client.disconnect_all(message)
     
     def load_module(self, name):
         try:
@@ -70,7 +84,7 @@ class GameBot:
             self.remove_subbot(handle)
             return False
         finally:
-            sys.stdout.flush()
+            sys.stdout.flush() # I suppose this is never executed because of the returns?
     
     def remove_subbot(self, handle):
         if handle not in self.subbots:

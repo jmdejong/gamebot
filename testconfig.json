@@ -2,6 +2,7 @@
     "startmodules": [
         "birthday",
         "duckduck",
+        "choice",
         "echo",
         "fortune",
         "grunk",

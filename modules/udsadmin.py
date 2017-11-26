@@ -115,11 +115,16 @@ class UdsAdmin(SubBot):
             elif task == "pid":
                 self.log(os.getpid())
                 
-                
             elif task == "me":
                 chan = argv[1]
                 status = argv[2]
                 self.bot.connection.action(chan, status)
+                
+            elif task == "reconnect":
+                command = argv[1]
+                self.bot.disconnect("just reconnecting")
+                self.bot.connect()
+                self.log("reconnected (or tried at least)")
             
             else:
                 self.log("unknown command "+str(task))

@@ -25,13 +25,13 @@ if __name__ == '__main__':
     irc.client.ServerConnection.buffer_class.errors = 'replace'
     
     reactor = irc.client.Reactor()
-    client = reactor.server().connect("localhost", 6667, name)
     
-    bot = GameBot(reactor, channels)
+    corebot = GameBot(reactor, name, "localhost", 6667, channels)
     loader = LoaderBot()
-    bot.add_subbot(loader, 'loaderbot')
+    corebot.add_subbot(loader, 'loaderbot')
     for bot in bots:
         loader.load(bot)
     
-    reactor.process_forever()
+    corebot.connect()
+    corebot.process()
     
