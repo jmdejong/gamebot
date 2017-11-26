@@ -71,7 +71,7 @@ class UdsAdmin(SubBot):
                 
                 self.loadmodule("ircsender")
                 module = self.loadmodule("gamebot")
-                gamebot = module.GameBot(oldcore.client, oldcore.chanlist)
+                gamebot = module.GameBot(oldcore.client, oldcore.name, oldcore.address, oldcore.port, oldcore.chanlist)
                 #gamebot.sender = self.loadmodule("ircsender").IrcSender()
                 
                 gamebot.on_welcome(self.bot.connection, None)
@@ -125,6 +125,11 @@ class UdsAdmin(SubBot):
                 self.bot.disconnect("just reconnecting")
                 self.bot.connect()
                 self.log("reconnected (or tried at least)")
+            
+            elif task == "coredata":
+                self.bot.name = argv[1] or self.bot.name
+                self.bot.address = argv[2] or self.bot.address
+                self.bot.port = int(argv[3]) if argv[3] else self.bot.port
             
             else:
                 self.log("unknown command "+str(task))
