@@ -3,7 +3,7 @@ from subbot import SubBot
 
 class HelpBot(SubBot):
     
-    name = "helpbot"
+    name = "help"
     commands = {"!rollcall", "!gbrollcall", "!gamebothelp", "!gbhelp", "!gamebotmodules", "!gbmodules", "!games", "!gamebotcommands", "!gbcommands"}
     description = "Show all functionality of this bot."
     botname = "gamebot"
