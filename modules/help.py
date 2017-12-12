@@ -4,7 +4,7 @@ from subbot import SubBot
 class HelpBot(SubBot):
     
     name = "helpbot"
-    commands = {"!rollcall", "!gamebothelp", "!gbhelp", "!gbmodules", "!games"}
+    commands = {"!rollcall", "!gbrollcall", "!gamebothelp", "!gbhelp", "!gamebotmodules", "!gbmodules", "!games", "!gamebotcommands", "!gbcommands"}
     description = "Show all functionality of this bot."
     botname = "gamebot"
     spamfree = {"#tildetown", "#gamebotshort"}
@@ -18,7 +18,7 @@ class HelpBot(SubBot):
     
     def getHelp(self, command, args, spamFree=False):
         
-        if command == "!rollcall":
+        if command == "!rollcall" or command == "!gbrollcall":
             return self.rollcall()
         
         if command == "!gamebothelp" or command == "!gbhelp":
@@ -40,13 +40,18 @@ class HelpBot(SubBot):
             if spamFree:
                 return "to avoid clogging the main channel, this list is not available here. Try another channel"
             return self.gameHelp()
+        
+        if command == "!gamebotcommands" or command == "!gbcommands":
+            if len(args) < 1:
+                return self.getAllCommands()
+            return self.getCommands(args[1])
     
     
     def rollcall(self):
-        return self.format("{botname} here. I am a modular bot. Currently I have these modules loaded: {modules}. I respond to these commands: {allcommands}. For all more information, say '!gamebothelp' or '!gbhelp'")
+        return self.format("{botname} here. I am a modular bot. Run !gbmodules to see a list of loaded modules. Run !gbcommands to see a list of commands. For all more information, say '!gamebothelp' or '!gbhelp'")
     
     def shortHelp(self):
-        return self.format("{botname} is ~troido's irc bot. It has several independently running modules. To see a list of currently loaded modules say '!gbmodules'. To see information on a specific module, say '!gbhelp <module>' where <module> is the name of the module. For a list of information on all modules, say '!gbhelp *' (unavailable in channel #tildetown)")
+        return self.format("{botname} is ~troido's irc bot. It has several independently running modules. To see a list of currently loaded modules say '!gbmodules'. To see the list of commands that gamebot replies to say '!gbcommands'. To see information on a specific module, say '!gbhelp <module>' where <module> is the name of the module. For a list of information on all modules, say '!gbhelp *' (unavailable in channel #tildetown)")
     
     def longHelp(self):
         helptext = self.format("{botname} is ~troido's irc bot. It has several kinds of functionality:\n{allhelp}")
@@ -71,6 +76,14 @@ class HelpBot(SubBot):
                 help += "{name}. Startcommand: {startcommand}, runcommand: {command}. Channels: {channels}\n".format(name=game.name, startcommand=game.startcommand, command=game.runcommand, channels = ', '.join(game.channels))
         help += "Start a session of a game by running its startcommand. Once a session is running, you can control the game with the runcommand. Everyting you enter after the runcommand will be passed as input to the game."
         return help
+    
+    def getAllCommands(self):
+        return ', '.join(set().union(*(subbot.commands for subbot in self.bot.subbots.values())))
+    
+    def getBotCommands(self, bot):
+        if bot not in self.subbots:
+            return ""
+        return ', '.join(self.subbots[bot].commands)
     
     def format(self, text):
         return (text.format(
