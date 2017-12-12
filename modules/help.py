@@ -34,7 +34,7 @@ class HelpBot(SubBot):
                 return self.getModules()
         
         if command == "!gamebotmodules" or command == "!gbmodules":
-            return self.getModules
+            return self.getModules()
         
         if command == "!games":
             if spamFree:
