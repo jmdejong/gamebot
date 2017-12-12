@@ -15,6 +15,7 @@ class WhatBot(SubBot):
         self.reply(chan, "!define " + args)
         self.reply(chan, ",ud " + args)
         self.reply(chan, "!acronym " + args)
+        self.reply(chan, ",wolfram " + args)
         
 
 
