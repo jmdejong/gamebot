@@ -44,8 +44,9 @@ class TimeFor(SubBot):
             self.reply(chan, "no ip found for user "+username)
             return
         data = getData(ip)
-        if not data or "time_zone" not in data:
+        if not data or "time_zone" not in data or not data["time_zone"]:
             self.reply(chan, "no timezone info found for user "+username)
+            return
         timezone = data["time_zone"]
         time = getTimeIn(timezone)
         self.reply(chan, time.replace(microsecond=0).isoformat())
