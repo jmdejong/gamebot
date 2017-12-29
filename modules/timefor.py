@@ -34,18 +34,18 @@ def getTimeIn(timezoneName):
 class TimeFor(SubBot):
     
     name = "timefor"
-    commands = {"!timefor"}
+    commands = {"!timefor", "!localtime"}
     description = "Display the current time for a tilde.town user (assuming they don't use a VPN)"
     
     def on_command(self, command, args, chan, sender, text):
         user = args.split()[0]
         ip = getIp(user)
         if not ip:
-            self.reply(chan, "no ip found for user "+username)
+            self.reply(chan, "no ip found for user "+user)
             return
         data = getData(ip)
         if not data or "time_zone" not in data or not data["time_zone"]:
-            self.reply(chan, "no timezone info found for user "+username)
+            self.reply(chan, "no timezone info found for user "+user)
             return
         timezone = data["time_zone"]
         time = getTimeIn(timezone)
