@@ -1,6 +1,6 @@
 
 
-import datetime as dt
+import datetime
 import subprocess
 import urllib.request
 import re
