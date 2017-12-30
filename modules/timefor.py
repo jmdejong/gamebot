@@ -49,7 +49,8 @@ class TimeFor(SubBot):
             return
         timezone = data["time_zone"]
         time = getTimeIn(timezone)
-        self.reply(chan, time.replace(microsecond=0).isoformat())
+        timestring = "{}:{}   full: {}".format(time.hour, time.minute, time.replace(microsecond=0).isoformat())
+        self.reply(chan, timestring)
 
 BotModule = TimeFor
 
