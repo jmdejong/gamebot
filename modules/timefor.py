@@ -49,7 +49,7 @@ class TimeFor(SubBot):
             return
         timezone = data["time_zone"]
         time = getTimeIn(timezone).replace(microsecond=0)
-        timestring = "{}:{}    full datetime: {}".format(time.hour, time.minute, time.isoformat())
+        timestring = "{}    full datetime: {}".format(time.strftime("%H:%M"), time.isoformat())
         if command == "!datetimefor":
             timestring = time.isoformat()
         self.reply(chan, timestring)
