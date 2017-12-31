@@ -34,7 +34,7 @@ def getTimeIn(timezoneName):
 class TimeFor(SubBot):
     
     name = "timefor"
-    commands = {"!timefor", "!localtime"}
+    commands = {"!timefor", "!datetimefor"}
     description = "Display the current time for a tilde.town user (assuming they don't use a VPN)"
     
     def on_command(self, command, args, chan, sender, text):
@@ -48,8 +48,10 @@ class TimeFor(SubBot):
             self.reply(chan, "no timezone info found for user "+user)
             return
         timezone = data["time_zone"]
-        time = getTimeIn(timezone)
-        timestring = "{}:{}    full datetime: {}".format(time.hour, time.minute, time.replace(microsecond=0).isoformat())
+        time = getTimeIn(timezone).replace(microsecond=0)
+        timestring = "{}:{}    full datetime: {}".format(time.hour, time.minute, time.isoformat())
+        if command == "!datetimefor":
+            timestring = time.isoformat()
         self.reply(chan, timestring)
 
 BotModule = TimeFor
