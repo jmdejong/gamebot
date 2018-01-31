@@ -13,7 +13,7 @@ class TranslateBot(SubBot):
     getlangurl = "https://translate.yandex.net/api/v1.5/tr.json/getLangs"
     translateurl = "https://translate.yandex.net/api/v1.5/tr.json/translate"
     
-    def on_command(self, command, args, chan, sender, text):
+    def on_command(self, command, args, chan, *_args, **_kwargs):
         if command == "!translate":
             action, _sep, text = args.partition(' ')
             if action == "getlang" or action == "getlangs":

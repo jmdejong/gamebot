@@ -12,7 +12,7 @@ class LoaderBot(SubBot):
     description = "reload modules; fallback for when admin crashes"
     
     
-    def on_command(self, command, args, chan, sender, text):
+    def on_command(self, command, args, chan, *_args, **_kwargs):
         
         try:
             modulename = args.partition(' ')[0]

@@ -25,7 +25,7 @@ class SubBot():
         pass
     
     # on_command is called when the first word of someone's message is a command of this bot
-    def on_command(self, command, args, chan, sender, text):
+    def on_command(self, command, args, chan, sender, text, *_args, **_kwargs):
         pass
     
     def get_description(self):

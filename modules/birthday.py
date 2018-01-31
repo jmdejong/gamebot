@@ -11,7 +11,7 @@ class BirthdayBot(SubBot):
     description = "Show what users have their birthday today."
     
     
-    def on_command(self, command, args, chan, sender, text):
+    def on_command(self, command, args, chan, *_args, **_kwargs):
         answer = subprocess.run(["birthday"], stdout=subprocess.PIPE, timeout=3, universal_newlines=True)
         answertext = answer.stdout.replace("\n", "  ")
         self.reply(chan, answertext)

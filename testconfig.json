@@ -1,8 +1,8 @@
 {
     "startmodules": [
         "birthday",
-        "duckduck",
         "choice",
+        "duckduck",
         "echo",
         "fortune",
         "grunk",
@@ -12,9 +12,13 @@
         "loader",
         "population",
         "sofar",
-        "udsadmin",
+        "swedish",
+        "timefor",
         "translate",
-        "water"
+        "udsadmin",
+        "water",
+        "what",
+        "whoami"
     ],
     "startchannels": [
         "#gamebot",

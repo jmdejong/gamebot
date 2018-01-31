@@ -21,7 +21,7 @@ class PopulationBot(SubBot):
     description = "Show the number of tilde.town users"
     
     
-    def on_command(self, command, args, chan, sender, text):
+    def on_command(self, command, args, chan, *_args, **_kwargs):
         self.reply(chan, str(len(list(get_users()))))
         
 

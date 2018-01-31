@@ -11,7 +11,8 @@ class HelpBot(SubBot):
     
     games = {"grunk", "hhgttg", "sofar"}
     
-    def on_command(self, command, args, chan, sender, text):
+    def on_command(self, command, args, chan, sender, text, e, c, *_args, **_kwargs):
+        self.botname = c.get_nickname()
         help = self.getHelp(command, args.split(), chan in self.spamfree)
         for line in help.split('\n'):
             self.reply(chan, line)
@@ -51,7 +52,7 @@ class HelpBot(SubBot):
         return self.format("{botname} here. I am a modular bot. Run !gbmodules to see a list of loaded modules. Run !gbcommands to see a list of commands. For all more information, say '!gamebothelp' or '!gbhelp'")
     
     def shortHelp(self):
-        return self.format("{botname} is ~troido's irc bot. It has several independently running modules. To see a list of currently loaded modules say '!gbmodules'. To see the list of commands that gamebot replies to say '!gbcommands'. To see information on a specific module, say '!gbhelp <module>' where <module> is the name of the module. For a list of information on all modules, say '!gbhelp *' (unavailable in channel #tildetown)")
+        return self.format("{botname} is ~troido's irc bot. It has several independently running modules. To see a list of currently loaded modules say '!gbmodules'. To see the list of commands that {botname} replies to say '!gbcommands'. To see information on a specific module, say '!gbhelp <module>' where <module> is the name of the module. For a list of information on all modules, say '!gbhelp *' (unavailable in channel #tildetown)")
     
     def longHelp(self):
         helptext = self.format("{botname} is ~troido's irc bot. It has several kinds of functionality:\n{allhelp}")

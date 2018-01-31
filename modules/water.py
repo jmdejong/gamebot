@@ -16,8 +16,8 @@ class WaterBot(SubBot):
         "smiles at {sender}"
         ]
     
-    def on_command(self, command, args, chan, sender, text):
-        if args.strip() == "gamebot": # argh! I definitely need a new bot
+    def on_command(self, command, args, chan, sender, text, e, c, *_args, **_kwargs):
+        if args.strip() == c.get_nickname():
             # note to self: stop using inheritance
             self.bot.connection.action(chan, random.choice(self.actions).format(sender=sender))
 

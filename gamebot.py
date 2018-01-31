@@ -146,7 +146,7 @@ class GameBot:
         if cmd in self.commands:
             subbot = self.commands[cmd]
             try:
-                subbot.on_command(cmd, args, chan, sender, text)
+                subbot.on_command(cmd, args, chan, sender, text, e, c)
             except Exception as err:
                 errmsg = "subbot {} errors on command {}: {}".format(subbot.handle, text, err)
                 print(errmsg)

@@ -13,7 +13,7 @@ class GameSubBot(SubBot):
         self.description = self.raw_description.format(channels=', '.join(self.channels), name=self.name, startcommand=self.startcommand, runcommand=self.runcommand)
     
     
-    def on_command(self, command, args, chan, sender, text):
+    def on_command(self, command, args, chan, *_args, **_kwargs):
         if command == self.startcommand:
             if chan in self.game_sessions:
                 self.reply(chan, "{name} is already running in this channel. Interact with it with the command {runcommand} <command>, for example: {runcommand} look".format(channels=', '.join(self.channels), name=self.name, startcommand=self.startcommand, runcommand=self.runcommand))

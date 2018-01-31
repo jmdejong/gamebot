@@ -28,8 +28,26 @@ def getData(ip):
         data = json.loads(text)
         return data
 
+def getTimeZone(username):
+    try:
+        with open("/home/"+username+"/.timezone", "r") as f:
+            timezone = f.read()
+        return timezone
+    except OSError:
+        ip = getIp(user)
+        if not ip:
+            return None
+        data = getData(ip)
+        if not data or "time_zone" not in data or not data["time_zone"]:
+            return None
+        timezone = data["time_zone"]
+        return timezone
+
 def getTimeIn(timezoneName):
-    return datetime.datetime.now(pytz.timezone(timezoneName))
+    try:
+        return datetime.datetime.now(pytz.timezone(timezoneName))
+    except pytz.exceptions.UnknownTimeZoneError:
+        return None
 
 class TimeFor(SubBot):
     
@@ -37,18 +55,25 @@ class TimeFor(SubBot):
     commands = {"!timefor", "!datetimefor"}
     description = "Display the current time for a tilde.town user (assuming they don't use a VPN)"
     
-    def on_command(self, command, args, chan, sender, text):
+    def on_command(self, command, args, chan, *_args, **_kwargs):
         user = args.split()[0]
-        ip = getIp(user)
-        if not ip:
-            self.reply(chan, "no ip found for user "+user)
+        #ip = getIp(user)
+        #if not ip:
+            #self.reply(chan, "no ip found for user "+user)
+            #return
+        #data = getData(ip)
+        #if not data or "time_zone" not in data or not data["time_zone"]:
+            #self.reply(chan, "no timezone info found for user "+user)
+            #return
+        #timezone = data["time_zone"]
+        timezone = getTimeZone(user)
+        if not timezone:
+            self.reply(chan, "no timezone information found for user "+user)
             return
-        data = getData(ip)
-        if not data or "time_zone" not in data or not data["time_zone"]:
-            self.reply(chan, "no timezone info found for user "+user)
-            return
-        timezone = data["time_zone"]
         time = getTimeIn(timezone).replace(microsecond=0)
+        if not time:
+            self.reply(chan, "user "+user+"has invalid timezone information")
+            return
         timestring = "{}    full datetime: {}".format(time.strftime("%H:%M"), time.isoformat())
         if command == "!datetimefor":
             timestring = time.isoformat()
