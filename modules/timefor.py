@@ -34,7 +34,7 @@ def getTimeZone(username):
             timezone = f.read()
         return timezone
     except OSError:
-        ip = getIp(user)
+        ip = getIp(username)
         if not ip:
             return None
         data = getData(ip)
