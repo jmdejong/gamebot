@@ -8,7 +8,7 @@ class Shout(SubBot):
     description = "shout some text"
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
-        self.reply(chan, args.upper())
+        self.reply(chan, args.upper()+"!")
 
 
 
