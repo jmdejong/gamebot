@@ -22,7 +22,7 @@ class HelpBot(SubBot):
         if command == "!rollcall" or command == "!gbrollcall":
             return self.rollcall()
         
-        if (command == "!help" or command == "!halp") and len(args) and args[0] == botname:
+        if (command == "!help" or command == "!halp") and len(args) and args[0] == self.botname:
             args = args[1:]
             command = "!gamebothelp"
         
