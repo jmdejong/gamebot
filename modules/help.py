@@ -4,7 +4,7 @@ from subbot import SubBot
 class HelpBot(SubBot):
     
     name = "help"
-    commands = {"!rollcall", "!gbrollcall", "!gamebothelp", "!gbhelp", "!gamebotmodules", "!gbmodules", "!games", "!gamebotcommands", "!gbcommands"}
+    commands = {"!rollcall", "!gbrollcall", "!gamebothelp", "!gbhelp", "!gamebotmodules", "!gbmodules", "!games", "!gamebotcommands", "!gbcommands", "!help", "!halp"}
     description = "Show all functionality of this bot."
     botname = "gamebot"
     spamfree = {"#tildetown", "#gamebotshort"}
@@ -21,6 +21,10 @@ class HelpBot(SubBot):
         
         if command == "!rollcall" or command == "!gbrollcall":
             return self.rollcall()
+        
+        if (command == "!help" or command == "!halp") and len(args) and args[0] == botname:
+            args = args[1:]
+            command = "!gamebothelp"
         
         if command == "!gamebothelp" or command == "!gbhelp":
             if len(args) < 1:
