@@ -20,7 +20,7 @@ class DuckDuckBot(SubBot):
     
     def explain(self, term):
         data = self.geturl(self.translateurl,  [("format", "json"), ("q", term), ("skip_disambig", 1)])
-        answer = data.get("AbstractText")
+        answer = data.get("Answer") or data.get("AbstractText")
         if not answer and "RelatedTopics" in data and len(data["RelatedTopics"]):
             answer = data["RelatedTopics"][0].get("Text")
         return answer
