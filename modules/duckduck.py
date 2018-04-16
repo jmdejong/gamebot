@@ -6,7 +6,7 @@ import json
 class DuckDuckBot(SubBot):
     
     name = "duckduck"
-    commands = {"!ddg", "!duckduck"}
+    commands = {"!ddg", "!duckduck", "?"}
     description = "explains a given term using duckduckgo instant answers"
     
     translateurl = "http://api.duckduckgo.com/"
