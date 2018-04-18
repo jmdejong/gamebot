@@ -12,6 +12,8 @@ class DuckDuckBot(SubBot):
     translateurl = "http://api.duckduckgo.com/"
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
+        if not args:
+            return
         abstract = self.explain(args)
         if abstract:
             self.reply(chan, abstract)
