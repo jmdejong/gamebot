@@ -85,7 +85,10 @@ class HelpBot(SubBot):
         return help
     
     def getAllCommands(self):
-        return ', '.join(set().union(*(subbot.commands for subbot in self.bot.subbots.values())))
+        return ', '.join(
+            sorted(
+                set().union(*(subbot.commands for subbot in self.bot.subbots.values())),
+                key=str.lower))
     
     def getBotCommands(self, bot):
         if bot not in self.subbots:
