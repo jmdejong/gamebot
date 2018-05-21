@@ -4,7 +4,7 @@ from subbot import SubBot
 class EchoBot(SubBot):
     
     name = "echobot"
-    commands = {"!echo"}
+    commands = {"!echo", "!gbecho"}
     description = "echo some text"
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
