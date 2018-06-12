@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 
 from subbot import SubBot
 
@@ -131,5 +132,9 @@ if __name__ == "__main__":
     import sys
     bf = BFInterpreter(sys.argv[1], sys.argv[1])
     bf.run()
-    print(bf.mem, bf.memptr)
     print(bf.output)
+    memmin = min(bf.mem.keys())
+    memmax = max(bf.mem.keys())
+    for i in range(memmin, memmax+1):
+        m = bf.mem.get(i, 0)
+        print("{}{:4d}: {:4d}  {}".format(('*' if i == bf.memptr else ' '), i, m, chr(m)))
