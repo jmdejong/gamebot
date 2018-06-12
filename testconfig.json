@@ -1,6 +1,7 @@
 {
     "startmodules": [
         "birthday",
+        "brainfuck",
         "choice",
         "duckduck",
         "echo",
