@@ -119,9 +119,9 @@ class BrainFuck(SubBot):
         bf = BFInterpreter(args, args)
         try:
             bf.run()
-            self.reply(chan, bf.output)
+            self.reply(chan, bf.output[:1000])
         except UnmatchedLoopException:
-            self.reply(char, "Unterminated Loop! output so far: " + bf.output)
+            self.reply(char, "Unterminated Loop! output so far: " + bf.output[:1000])
 
 
 
