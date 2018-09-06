@@ -13,7 +13,6 @@ from subbot import SubBot
 
 def getIp(username):
     finger = subprocess.run(["finger", "-p", username], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3, universal_newlines=True).stdout
-    #ip = finger.split("\n")[2].split(" ")[-1]
     ipmatch = re.search("\d+\.\d+\.\d+\.\d+", finger)
     if not ipmatch:
         return None
@@ -31,7 +30,7 @@ def getData(ip):
 def getTimeZone(username):
     try:
         with open("/home/"+username+"/.timezone", "r") as f:
-            timezone = f.read()
+            timezone = f.read().strip()
         return timezone
     except OSError:
         ip = getIp(username)
@@ -44,10 +43,7 @@ def getTimeZone(username):
         return timezone
 
 def getTimeIn(timezoneName):
-    try:
-        return datetime.datetime.now(pytz.timezone(timezoneName))
-    except pytz.exceptions.UnknownTimeZoneError:
-        return None
+    return datetime.datetime.now(pytz.timezone(timezoneName))
 
 class TimeFor(SubBot):
     
@@ -57,22 +53,14 @@ class TimeFor(SubBot):
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
         user = args.split()[0]
-        #ip = getIp(user)
-        #if not ip:
-            #self.reply(chan, "no ip found for user "+user)
-            #return
-        #data = getData(ip)
-        #if not data or "time_zone" not in data or not data["time_zone"]:
-            #self.reply(chan, "no timezone info found for user "+user)
-            #return
-        #timezone = data["time_zone"]
         timezone = getTimeZone(user)
         if not timezone:
             self.reply(chan, "no timezone information found for user "+user)
             return
-        time = getTimeIn(timezone).replace(microsecond=0)
-        if not time:
-            self.reply(chan, "user "+user+"has invalid timezone information")
+        try:
+            time = getTimeIn(timezone).replace(microsecond=0)
+        except pytz.exceptions.UnknownTimeZoneError:
+            self.reply(chan, user+" has an invalid timezone string: "+timezone)
             return
         timestring = "{}    full datetime: {}".format(time.strftime("%H:%M"), time.isoformat())
         if command == "!datetimefor":
