@@ -21,7 +21,7 @@ def getIp(username):
     return ip
 
 def getData(ip):
-    url = "https://freegeoip.net/json/"+ip
+    url = "https://geoip.tools/v1/json/?q="+ip
     with urllib.request.urlopen(url) as r:
         # for some reason python gives an error if I try to read json directly from the url
         text = str(r.read(), encoding="utf-8")
@@ -38,9 +38,9 @@ def getTimeZone(username):
         if not ip:
             return None
         data = getData(ip)
-        if not data or "time_zone" not in data or not data["time_zone"]:
+        if not data:
             return None
-        timezone = data["time_zone"]
+        timezone = data.get("time_zone")
         return timezone
 
 def getTimeIn(timezoneName):
