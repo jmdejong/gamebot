@@ -42,11 +42,11 @@ class Evaluator(SubBot):
         returnval = None
         error = None
         try:
-            returnval = str(self.aeval(args))
+            returnval = self.aeval(args)
         except asteval.EvalError as e:
             error = e
         if returnval:
-            self.reply(chan, returnval)
+            self.reply(chan, str(returnval))
         if error:
             self.reply(chan, error)
 
