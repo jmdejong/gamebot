@@ -1,6 +1,7 @@
 
 import ast
 import asteval
+import time
 # using a modified version of asteval (unless it will be merged)
 # see https://github.com/jmdejong/asteval/tree/gb
 
@@ -21,7 +22,7 @@ class Evaluator(SubBot):
     def __init__(self):
         symtable = asteval.make_symbol_table()
         del symtable["open"]
-        self.aeval = asteval.Interpreter(symtable, no_print=True, builtins_readonly=True)
+        self.aeval = asteval.Interpreter(symtable, no_print=True, builtins_readonly=True, max_time=1)
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
         if command == "!hy":
@@ -42,6 +43,7 @@ class Evaluator(SubBot):
         returnval = None
         error = None
         try:
+            self.aeval.start_time = time.time()
             returnval = self.aeval.run(tree)
         except Exception as e:
             error = e
