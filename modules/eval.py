@@ -21,7 +21,7 @@ class Evaluator(SubBot):
     def __init__(self):
         symtable = asteval.make_symbol_table()
         del symtable["open"]
-        self.aeval = asteval.Interpreter(symtable, no_print=True, blacklist_builtins=True)
+        self.aeval = asteval.Interpreter(symtable, no_print=True, builtins_readonly=True)
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
         if command == "!hy":
@@ -42,13 +42,13 @@ class Evaluator(SubBot):
         returnval = None
         error = None
         try:
-            returnval = self.aeval(args)
-        except asteval.EvalError as e:
+            returnval = self.aeval.run(tree)
+        except Exception as e:
             error = e
         if returnval:
             self.reply(chan, str(returnval))
         if error:
-            self.reply(chan, error)
+            self.reply(chan, str(error))
 
 
 
