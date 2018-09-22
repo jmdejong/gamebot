@@ -2,6 +2,7 @@
 import ast
 import asteval
 import time
+import io
 # using a modified version of asteval (unless it will be merged)
 # see https://github.com/jmdejong/asteval/tree/gb
 
@@ -22,7 +23,10 @@ class Evaluator(SubBot):
     def __init__(self):
         symtable = asteval.make_symbol_table()
         del symtable["open"]
-        self.aeval = asteval.Interpreter(symtable, no_print=True, builtins_readonly=True, max_time=1)
+        self.aeval = asteval.Interpreter(
+            symtable,
+            builtins_readonly=True,
+            max_time=1)
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
         if command == "!hy":
@@ -40,17 +44,24 @@ class Evaluator(SubBot):
                 tree = ast.parse(args)
             except SyntaxError as ex:
                 self.reply(chan, "Syntax Error: "+str(ex))
+                return
         returnval = None
         error = None
+        self.aeval.writer = io.StringIO()
         try:
             self.aeval.start_time = time.time()
             returnval = self.aeval.run(tree)
-        except Exception as e:
+        except asteval.EvalError as e:
             error = e
-        if returnval:
+        except RecursionError as e:
+            error = e
+        if returnval is not None:
             self.reply(chan, str(returnval))
-        if error:
-            self.reply(chan, str(error))
+        stdout = self.aeval.writer.getvalue()
+        if stdout:
+            self.reply(chan, stdout)
+        if error is not None:
+            self.reply(chan, str(error.__class__.__name__) + ": " + str(error))
 
 
 
