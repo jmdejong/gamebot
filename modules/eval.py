@@ -51,6 +51,8 @@ class Evaluator(SubBot):
         try:
             self.aeval.start_time = time.time()
             returnval = self.aeval.run(tree)
+        except asteval.UserError as e:
+            error = e.get_error()
         except asteval.EvalError as e:
             error = e
         except RecursionError as e:
