@@ -21,12 +21,17 @@ class Evaluator(SubBot):
     description = "evaluates a (python-like) expression using asteval"
     
     def __init__(self):
-        symtable = asteval.make_symbol_table()
-        del symtable["open"]
+        self.builtinsyms = asteval.make_symbol_table()
+        del self.builtinsyms["open"]
         self.aeval = asteval.Interpreter(
-            symtable,
+            self.builtinsyms,
             builtins_readonly=True,
             max_time=1)
+    
+    def on_load(self):
+        syms = self.bot.data["eval"]["syms"]
+        self.aeval.symtable.update(syms)
+        
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
         if command == "!hy":
@@ -49,10 +54,9 @@ class Evaluator(SubBot):
         error = None
         self.aeval.writer = io.StringIO()
         try:
-            self.aeval.start_time = time.time()
-            returnval = self.aeval.run(tree)
+            returnval = self.aeval.eval_ast(tree)
         except asteval.UserError as e:
-            error = e.get_error()
+            error = e.error
         except asteval.EvalError as e:
             error = e
         except RecursionError as e:
@@ -64,6 +68,9 @@ class Evaluator(SubBot):
             self.reply(chan, stdout)
         if error is not None:
             self.reply(chan, str(error.__class__.__name__) + ": " + str(error))
+    
+    def stop(self):
+        self.bot.data["eval"] = {"syms": self.aeval.symtable}
 
 
 

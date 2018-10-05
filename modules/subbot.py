@@ -14,6 +14,10 @@ class SubBot():
         self.bot = bot
         self.reply = replyfn
         self.handle = handle
+        self.on_load()
+    
+    def on_load(self):
+        pass
     
     # on_welcome is the irc welcome event, when the bot joins a server
     def on_welcome(self):

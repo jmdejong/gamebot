@@ -32,6 +32,7 @@ class GameBot:
         
         self.subbots = {}
         self.commands = {}
+        self.data = {}
         self.active_channels = set()
         self.connection = None
         self.client = client

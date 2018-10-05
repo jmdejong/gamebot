@@ -73,7 +73,8 @@ class UdsAdmin(SubBot):
                 module = self.loadmodule("gamebot")
                 gamebot = module.GameBot(oldcore.client, oldcore.name, oldcore.address, oldcore.port, oldcore.chanlist)
                 #gamebot.sender = self.loadmodule("ircsender").IrcSender()
-                
+                if hasattr(oldcore, "data"):
+                    gamebot.data = oldcore.data
                 gamebot.on_welcome(self.bot.connection, None)
                 for name, subbot in oldcore.subbots.items():
                     gamebot.add_subbot(subbot, name)
