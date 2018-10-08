@@ -20,7 +20,7 @@ def getIp(username):
     return ip
 
 def getData(ip):
-    url = "https://geoip.tools/v1/json/?q="+ip
+    url = "http://ip-api.com/json/{ip}".format(ip=ip)
     with urllib.request.urlopen(url) as r:
         # for some reason python gives an error if I try to read json directly from the url
         text = str(r.read(), encoding="utf-8")
