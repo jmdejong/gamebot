@@ -39,7 +39,7 @@ def getTimeZone(username):
         data = getData(ip)
         if not data:
             return None
-        timezone = data.get("time_zone")
+        timezone = data.get("timezone")
         return timezone
 
 def getTimeIn(timezoneName):
@@ -49,7 +49,7 @@ class TimeFor(SubBot):
     
     name = "timefor"
     commands = {"!timefor", "!datetimefor"}
-    description = "Display the current time for a tilde.town user (assuming they don't use a VPN)"
+    description = "Display the current time for a tilde.town user (assuming they don't use a VPN). If the timezone doesn't show up or is incorrect, you can create a .timezone file in your homedir which contains your timezone in the format Area/City (for example Europe/Amsterdam). See /home/troido/.timezone for an example"
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
         user = args.split()[0]
