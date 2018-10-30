@@ -49,13 +49,16 @@ class TimeFor(SubBot):
     
     name = "timefor"
     commands = {"!timefor", "!datetimefor"}
-    description = "Display the current time for a tilde.town user (assuming they don't use a VPN). If the timezone doesn't show up or is incorrect, you can create a .timezone file in your homedir which contains your timezone in the format Area/City (for example Europe/Amsterdam). See /home/troido/.timezone for an example"
+    description = "Display the current time for a tilde.town user (assuming they don't use a VPN). If the timezone doesn't show up or is incorrect, you can create a .timezone file in your homedir which contains your timezone in the format Area/City (for example Europe/Amsterdam). See /home/troido/.timezone for an example. Leave your .timezone file empty to hide your timezone."
     
     def on_command(self, command, args, chan, *_args, **_kwargs):
         user = args.split()[0]
         timezone = getTimeZone(user)
-        if not timezone:
+        if timezone is None:
             self.reply(chan, "no timezone information found for user "+user)
+            return
+        elif timezone == "":
+            self.reply(chan, "{} does not want to show their timezone".format(user))
             return
         try:
             time = getTimeIn(timezone).replace(microsecond=0)
