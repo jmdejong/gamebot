@@ -21,8 +21,7 @@ class AdminClient:
 	def listen(self):
 		while True:
 			data = self.sock.recv(2048)
-			print("")
-			print(data)
+			print(str(data, "utf-8"))
 
 def main():
 	address = os.path.join(os.path.dirname(__file__), "adminsocket.sock")
