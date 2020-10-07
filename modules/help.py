@@ -29,14 +29,16 @@ class HelpBot(SubBot):
         if command == "!gamebothelp" or command == "!gbhelp":
             if len(args) < 1:
                 return self.shortHelp()
-            if args[0] in self.bot.subbots:
+            elif args[0] in self.bot.subbots:
                 return self.moduleHelp(args[0])
-            if args[0] == "all" or args[0] == "*":
+            elif args[0] == "all" or args[0] == "*":
                 if spamFree:
                     return "to avoid clogging the main channel, the full list is not available here. Try another channel"
                 return self.longHelp()
-            if args[0] == "modules":
+            elif args[0] == "modules":
                 return self.getModules()
+            else:
+                return "topic {} not found".format(args[0])
         
         if command == "!gamebotmodules" or command == "!gbmodules":
             return self.getModules()
