@@ -106,7 +106,15 @@ class BFInterpreter:
             self.inp = self.inp[1:]
         else:
             self.mem[self.memptr] = 0
-                
+    
+    def safe_output(self, size=880):
+        if len(self.output) <= size:
+            output = self.output
+        else:
+            output = self.output[:(size//2)] + " ... " + self.output[-(size//2):]
+        return "".join(c if c.isprintable() else " " for c in output)
+            
+        
             
 
 class BrainFuck(SubBot):
@@ -119,9 +127,9 @@ class BrainFuck(SubBot):
         bf = BFInterpreter(args, args)
         try:
             bf.run()
-            self.reply(chan, "".join(c if c.isprintable() else " " for c in bf.output[:1000] ))
+            self.reply(chan, bf.safe_output())
         except UnmatchedLoopException:
-            self.reply(char, "Unterminated Loop! output so far: " + bf.output[:1000])
+            self.reply(char, "Unterminated Loop! output so far: " + bf.safe_output(800))
 
 
 
@@ -132,8 +140,7 @@ if __name__ == "__main__":
     import sys
     bf = BFInterpreter(sys.argv[1], sys.argv[1])
     bf.run()
-    print(bf.output)
-    print("".join(c if c.isprintable() else " " for c in bf.output[:1000]))
+    print(bf.safe_output())
     memmin = min(bf.mem.keys())
     memmax = max(bf.mem.keys())
     for i in range(memmin, memmax+1):
