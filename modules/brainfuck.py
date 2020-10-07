@@ -119,7 +119,7 @@ class BrainFuck(SubBot):
         bf = BFInterpreter(args, args)
         try:
             bf.run()
-            self.reply(chan, bf.output[:1000])
+            self.reply(chan, "".join(c if c.isprintable() else " " for c in bf.output[:1000] ))
         except UnmatchedLoopException:
             self.reply(char, "Unterminated Loop! output so far: " + bf.output[:1000])
 
@@ -133,6 +133,7 @@ if __name__ == "__main__":
     bf = BFInterpreter(sys.argv[1], sys.argv[1])
     bf.run()
     print(bf.output)
+    print("".join(c if c.isprintable() else " " for c in bf.output[:1000]))
     memmin = min(bf.mem.keys())
     memmax = max(bf.mem.keys())
     for i in range(memmin, memmax+1):
