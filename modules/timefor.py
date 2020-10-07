@@ -13,11 +13,15 @@ from subbot import SubBot
 
 def getIp(username):
     finger = subprocess.run(["finger", "-p", username], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=3, universal_newlines=True).stdout
-    ipmatch = re.search("\d+\.\d+\.\d+\.\d+", finger)
+    ipmatch = re.search("\s(\d+\.\d+\.\d+\.\d+)[\s$]", finger)
     if not ipmatch:
-        return None
-    ip = ipmatch.group(0)
+        ipmatch = re.search("\s([0-9A-Fa-f]*:[0-9A-Fa-f:]*:[0-9A-Fa-f]+)[\s$]", finger)
+        if not ipmatch:
+            print("no ip matched")
+            return None
+    ip = ipmatch.group(1)
     return ip
+
 
 def getData(ip):
     url = "http://ip-api.com/json/{ip}".format(ip=ip)
